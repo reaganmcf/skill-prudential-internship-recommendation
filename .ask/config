@@ -1,9 +1,39 @@
 {
   "deploy_settings": {
     "default": {
-      "skill_id": "",
+      "skill_id": "amzn1.ask.skill.d5651ac8-ff24-4b14-af81-16db95352f7b",
       "was_cloned": false,
-      "merge": {}
+      "merge": {},
+      "resources": {
+        "manifest": {
+          "eTag": "5304ba31d9cc4849dc1373aa072f50c6"
+        },
+        "interactionModel": {
+          "de-DE": {
+            "eTag": "24825ca2cf4b97128c003000bd2944a9"
+          },
+          "en-US": {
+            "eTag": "c30ea1d97e31df428c996f9940a0093b"
+          },
+          "en-GB": {
+            "eTag": "155aa331176976dbe20b48f31780a479"
+          }
+        },
+        "lambda": [
+          {
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "arn": "arn:aws:lambda:us-east-1:398044445706:function:ask-custom-skill-prudential-internship-recommedation-default",
+            "awsRegion": "us-east-1",
+            "codeUri": "lambda/custom",
+            "functionName": "ask-custom-skill-prudential-internship-recommedation-default",
+            "handler": "index.handler",
+            "revisionId": "92139afb-7573-420e-b0b8-39dc6d1f997b",
+            "runtime": "nodejs8.10"
+          }
+        ]
+      }
     }
   }
 }

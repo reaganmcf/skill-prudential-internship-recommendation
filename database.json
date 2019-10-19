@@ -1,0 +1,34 @@
+{
+  "jobs": [
+    {
+      "category": "Actuarial",
+      "job_code": "ADV000AY",
+      "job_title": "",
+      "location_city": [
+        ""
+      ],
+      "location_state": [
+        ""
+      ],
+      "impact": "",
+      "responsibilities": "",
+      "qualifications": {
+        "min_grad_year": 2010,
+        "target_majors": [
+          "CS",
+          "MATH",
+          "STATS"
+        ],
+        "min_gpa": 3.0,
+        "requires_math_skills": true,
+        "requires_cs_skills": false,
+        "requires_interpersonal_skills": false,
+        "requires_writing_skills": false,
+        "requires_management_skills": false,
+        "requires_pc_skills": true,
+        "requires_analysis_skills": true,
+        "requires_datascience_skills": true
+      }
+    }
+  ]
+}
