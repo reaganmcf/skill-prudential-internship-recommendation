@@ -1,0 +1,49 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "summary": "Spend some time coming up with an interesting, succinct description.",
+          "examplePhrases": [
+            "Alexa open Minecraft Helper",
+            "Alexa ask Minecraft Helper what's the recipe for a chest",
+            "Alexa ask Minecraft Helper how do I get a map"
+          ],
+          "keywords": [
+            "Minecraft",
+            "game"
+          ],
+          "name": "skill-prudential-internship-recommedation",
+          "description": "Sample Full Description"
+        },
+        "de-DE": {
+          "name": "skill-prudential-internship-recommedation"
+        },
+        "en-GB": {
+          "name": "skill-prudential-internship-recommedation"
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "Sample Testing Instructions.",
+      "category": "EDUCATION_AND_REFERENCE",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "sourceDir": "lambda/custom",
+          "uri": "ask-custom-skill-prudential-internship-recommedation-default"
+        }
+      }
+    },
+    "manifestVersion": "1.0",
+    "permissions": [],
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "isExportCompliant": true,
+      "containsAds": false,
+      "isChildDirected": false,
+      "usesPersonalInfo": false
+    }
+  }
+}
