@@ -1,0 +1,80 @@
+{
+  "jobs": [
+    {
+      "category": "ACTUARIAL",
+      "job_code": "ADV000AY",
+      "job_title": "2020 Actuarial Consulting Internship: Prudential",
+      "job_type": "INTERNSHIP",
+      "location_city": [
+        "HARTFORD"
+      ],
+      "location_state": [
+        "CONNECTICUT"
+      ],
+      "impact": "Are you looking for a career that helps you apply your love of math, data, and science to inform business strategy and work with diverse teams on challenging projects? Are you interested in being a part of an exciting internship program that is focused on developing technical and professional skills while collaborating alongside leaders in the actuarial community? If you are results driven, have a passion for working with data, and are deeply technical and highly innovative, then Prudential's Consulting Actuarial Internship Program is the place for you!",
+      "responsibilities": [
+         "Analyzing client data used to develop pension plan liabilities",
+         "Reconciling census changes and associated gains/losses",
+         "Preparing ERISA funding valuations and government filings",
+         "Developing tools and models for key processes",
+         "Performing actuarial research and statistical analyses"
+      ],
+      "qualifications": {
+        "target_grad_year": [
+           2020,
+           2021,
+           2022
+        ],
+        "target_majors": [
+          "AS",
+          "MATH",
+          "STATS"
+        ],
+        "min_gpa": 3.2,
+        "requires_math_skills": true,
+        "requires_cs_skills": false,
+        "requires_interpersonal_skills": true,
+        "requires_writing_skills": true,
+        "requires_management_skills": false,
+        "requires_pc_skills": true,
+        "requires_analysis_skills": false,
+        "requires_datascience_skills": false
+      }
+   },
+   {
+      "category": "",
+      "job_code": "",
+      "job_title": "",
+      "job_type": "",
+      "location_city": [
+        ""
+      ],
+      "location_state": [
+        ""
+      ],
+      "impact": "",
+      "responsibilities": [
+         "",
+         ""
+      ],
+      "qualifications": {
+        "target_grad_year": [
+           0000,
+           0000
+        ],
+        "target_majors": [
+          "AS",
+          "MATH"
+        ],
+        "min_gpa": 0.0,
+        "requires_math_skills": false,
+        "requires_cs_skills": false,
+        "requires_interpersonal_skills": false,
+        "requires_writing_skills": false,
+        "requires_management_skills": false,
+        "requires_pc_skills": false,
+        "requires_analysis_skills": false,
+        "requires_datascience_skills": false
+   }
+  ]
+}
