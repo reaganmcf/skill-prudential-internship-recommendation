@@ -4,6 +4,7 @@
       "category": "Actuarial",
       "job_code": "ADV000AY",
       "job_title": "",
+      "job_type": 
       "location_city": [
         ""
       ],
@@ -30,5 +31,9 @@
         "requires_datascience_skills": true
       }
     }
+    {
+        
+    }
+    
   ]
 }
