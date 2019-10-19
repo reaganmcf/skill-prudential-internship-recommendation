@@ -75,6 +75,7 @@
         "requires_pc_skills": false,
         "requires_analysis_skills": false,
         "requires_datascience_skills": false
-   }
+     }
+    }
   ]
 }
