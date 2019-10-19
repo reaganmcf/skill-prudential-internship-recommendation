@@ -2,79 +2,48 @@
 /* eslint-disable  no-console */
 
 const Alexa = require('ask-sdk-core');
-const recipes = require('./recipes');
 const i18n = require('i18next');
 const sprintf = require('i18next-sprintf-postprocessor');
-
-/* INTENT HANDLERS */
-const LaunchRequestHandler = {
+const persistenceAdapter = require('ask-sdk-s3-persistence-adapter');
+const translations = require('./localization')
+/**
+ * Handler for LaunchRequest sent by Alexa
+ * Triggers when the user already has a profile setup in persistent attributes
+ */
+const LaunchRequestHandlerWithProfile = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
+
+    console.log(JSON.stringify(handlerInput.requestEnvelope.request));
+    const attributesManager = handlerInput.attributesManager;
+    const sessionAttributes = attributesManager.getSessionAttributes() || {};
+
+    const major = sessionAttributes.hasOwnProperty('major') ? sessionAttributes.major : undefined;
+    const gpa = sessionAttributes.hasOwnProperty('gpa') ? sessionAttributes.gpa : undefined;
+    const grad_year = sessionAttributes.hasOwnProperty('grad_year') ? sessionAttributes.grad_year : undefined;
+    const math_skills = sessionAttributes.hasOwnProperty('math_skills') ? sessionAttributes.math_skills : undefined;
+    const cs_skills = sessionAttributes.hasOwnProperty('cs_skills') ? sessionAttributes.cs_skills : undefined;
+    const management_skills = sessionAttributes.hasOwnProperty('management_skills') ? sessionAttributes.management_skills : undefined;
+    const pc_skills = sessionAttributes.hasOwnProperty('pc_skills') ? sessionAttributes.pc_skills : undefined;
+    const analysis_skills = sessionAttributes.hasOwnProperty('analysis_skills') ? sessionAttributes.analysis_skills : undefined;
+    const datascience_skills = sessionAttributes.hasOwnProperty('datascience_skills') ? sessionAttributes.datascience_skills : undefined;
+
+    return handlerInput.requestEnvelope.request.type === 'LaunchRequest' &&
+      major &&
+      gpa &&
+      grad_year &&
+      math_skills &&
+      cs_skills &&
+      management_skills &&
+      pc_skills &&
+      analysis_skills &&
+      datascience_skills;
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-    const item = requestAttributes.t(getRandomItem(Object.keys(recipes.RECIPE_EN_US)));
-
-    const speakOutput = requestAttributes.t('WELCOME_MESSAGE', requestAttributes.t('SKILL_NAME'), item);
-    const repromptOutput = requestAttributes.t('WELCOME_REPROMPT');
-
-    handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-
-    return handlerInput.responseBuilder
-      .speak(speakOutput)
-      .reprompt(repromptOutput)
-      .getResponse();
-  },
-};
-
-const RecipeHandler = {
-  canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'RecipeIntent';
-  },
-  handle(handlerInput) {
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
-    const itemSlot = handlerInput.requestEnvelope.request.intent.slots.Item;
-    let itemName;
-    if (itemSlot && itemSlot.value) {
-      itemName = itemSlot.value.toLowerCase();
-    }
-
-    const cardTitle = requestAttributes.t('DISPLAY_CARD_TITLE', requestAttributes.t('SKILL_NAME'), itemName);
-    const myRecipes = requestAttributes.t('RECIPES');
-    const recipe = myRecipes[itemName];
-    let speakOutput = '';
-
-    if (recipe) {
-      sessionAttributes.speakOutput = recipe;
-      // uncomment the _2_ reprompt lines if you want to repeat the info
-      // and prompt for a subsequent action
-      // sessionAttributes.repromptSpeech = requestAttributes.t('RECIPE_REPEAT_MESSAGE');
-      handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-
-      return handlerInput.responseBuilder
-        .speak(sessionAttributes.speakOutput)
-        // .reprompt(sessionAttributes.repromptSpeech)
-        .withSimpleCard(cardTitle, recipe)
-        .getResponse();
-    }
-    const repromptSpeech = requestAttributes.t('RECIPE_NOT_FOUND_REPROMPT');
-    if (itemName) {
-      speakOutput += requestAttributes.t('RECIPE_NOT_FOUND_WITH_ITEM_NAME', itemName);
-    } else {
-      speakOutput += requestAttributes.t('RECIPE_NOT_FOUND_WITHOUT_ITEM_NAME');
-    }
-    speakOutput += repromptSpeech;
-
-    // save outputs to attributes, so we can use it to repeat
-    sessionAttributes.speakOutput = speakOutput;
-    sessionAttributes.repromptSpeech = repromptSpeech;
-
-    handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
+    sessionAttributes.speakOutput = requestAttributes.t('WELCOME_MESSAGE', requestAttributes.t('SKILL_NAME'));
+    sessionAttributes.repromptSpeech = requestAttributes.t('WELCOME_MESSAGE_REPROMPT');
 
     return handlerInput.responseBuilder
       .speak(sessionAttributes.speakOutput)
@@ -83,6 +52,98 @@ const RecipeHandler = {
   },
 };
 
+/**
+ * Handles LaunchRequest requests sent by Alexa
+ * Triggers when the user already DOES NOT have a persistent attributes
+ */
+const LaunchRequestHandlerNoProfile = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'LaunchRequest'
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+
+    sessionAttributes.speakOutput = requestAttributes.t('WELCOME_MESSAGE_NO_PROFILE', requestAttributes.t('SKILL_NAME'));
+    sessionAttributes.repromptSpeech = requestAttributes.t('WELCOME_MESSAGE_NO_PROFILE_REPROMPT');
+
+    return handlerInput.responseBuilder
+      .speak(sessionAttributes.speakOutput)
+      .reprompt(sessionAttributes.repromptSpeech)
+      .getResponse();
+  }
+}
+
+/**
+ * Handles GeneralInformationIntent requests sent by Alexa
+ */
+const GeneralInformationIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'GeneralInformationIntent';
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+
+    sessionAttributes.speakOutput = requestAttributes.t('GENERAL_INFORMATION');
+    sessionAttributes.repromptSpeech = requestAttributes.t('GENERAL_INFORMATION_REMPROMPT');
+
+    return handlerInput.responseBuilder
+      .speak(sessionAttributes.speakOutput)
+      .reprompt(sessionAttributes.repromptSpeech)
+      .getResponse();
+  }
+}
+
+/**
+ * Handles CaptureAttributesIntent requests sent by Alexa
+ */
+const CaptureAttributesIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'CaptureAttributesIntent';
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+
+    const slots = handlerInput.requestEnvelope.request.intent
+    const major = slots.major.value
+    const gpa = slots.gpa.value
+    const grad_year = slots.grad_year.value
+    const math_skills = slots.math_skills.value
+    const cs_skills = slots.cs_skills.value
+    const management_skills = slots.management_skills.value
+    const pc_skills = slots.pc_skills.value
+    const analysis_skills = slots.analysis_skills.value
+    const datascience_skills = slots.datascience_skills.value
+
+    attributesManager.setPersistentAttributes({
+      major,
+      gpa,
+      grad_year,
+      math_skills,
+      cs_skills,
+      management_skills,
+      pc_skills,
+      analysis_skills,
+      datascience_skills
+    })
+    attributesManager.savePersistentAttributes();
+
+    sessionAttributes.speakOutput = requestAttributes.t('SAVED_PROFILE');
+    sessionAttributes.repromptSpeech = '';
+
+    return handlerInput.responseBuilder
+      .speak(sessionAttributes.speakOutput)
+      .getResponse();
+  }
+}
+
+/**
+ * Handles AMAZON.HelpIntent requests sent by Alexa
+ */
 const HelpHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -92,10 +153,8 @@ const HelpHandler = {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-    const item = requestAttributes.t(getRandomItem(Object.keys(recipes.RECIPE_EN_US)));
-
-    sessionAttributes.speakOutput = requestAttributes.t('HELP_MESSAGE', item);
-    sessionAttributes.repromptSpeech = requestAttributes.t('HELP_REPROMPT', item);
+    sessionAttributes.speakOutput = requestAttributes.t('HELP_MESSAGE');
+    sessionAttributes.repromptSpeech = requestAttributes.t('HELP_REPROMPT');
 
     return handlerInput.responseBuilder
       .speak(sessionAttributes.speakOutput)
@@ -104,6 +163,11 @@ const HelpHandler = {
   },
 };
 
+
+/**
+ * Handles AMAZON.RepeatIntent requests sent by Alexa
+ * Prompt and reprompt will be taken from session attributes
+ */
 const RepeatHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -119,6 +183,9 @@ const RepeatHandler = {
   },
 };
 
+/**
+ * Handles AMAZON.StopIntent and AMAZON.CancelIntent requests sent by Alexa
+ */
 const ExitHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -146,6 +213,10 @@ const SessionEndedRequestHandler = {
   },
 };
 
+/**
+ * Error Handler
+ * handles all errors that exist
+ */
 const ErrorHandler = {
   canHandle() {
     return true;
@@ -160,15 +231,16 @@ const ErrorHandler = {
   },
 };
 
-/* Helper Functions */
-
-// Finding the locale of the user
+/**
+ * Localization Interceptor
+ * Add i18n translation client to the attributes manager
+ */
 const LocalizationInterceptor = {
   process(handlerInput) {
     const localizationClient = i18n.use(sprintf).init({
       lng: handlerInput.requestEnvelope.request.locale,
       overloadTranslationOptionHandler: sprintf.overloadTranslationOptionHandler,
-      resources: languageStrings,
+      resources: translations,
       returnObjects: true,
     });
 
@@ -179,75 +251,65 @@ const LocalizationInterceptor = {
   },
 };
 
-// getRandomItem
-function getRandomItem(arrayOfItems) {
-  // the argument is an array [] of words or phrases
-  let i = 0;
-  i = Math.floor(Math.random() * arrayOfItems.length);
-  return (arrayOfItems[i]);
+/**
+ * This request interceptor will log all incoming requests in the associated Logs (CloudWatch) of the AWS Lambda functions
+ */
+const LoggingRequestInterceptor = {
+  process(handlerInput) {
+    console.log(`Incoming request: ${JSON.stringify(handlerInput.requestEnvelope)}`);
+  }
+};
+
+/**
+* This response interceptor will log all outgoing responses in the associated Logs (CloudWatch) of the AWS Lambda functions
+*/
+const LoggingResponseInterceptor = {
+  process(handlerInput, response) {
+    console.log(`Outgoing response: ${JSON.stringify(response)}`);
+  }
+};
+
+
+//Load the target user's profile and store it into session attr
+const LoadProfileInterceptor = {
+  async process(handlerInput) {
+    const attributesManager = handlerInput.attributesManager;
+    const sessionAttributes = await attributesManager.getPersistentAttributes() || {};
+
+    const major = sessionAttributes.hasOwnProperty('major') ? sessionAttributes.major : undefined;
+    const gpa = sessionAttributes.hasOwnProperty('gpa') ? sessionAttributes.gpa : undefined;
+    const grad_year = sessionAttributes.hasOwnProperty('grad_year') ? sessionAttributes.grad_year : undefined;
+    const math_skills = sessionAttributes.hasOwnProperty('math_skills') ? sessionAttributes.math_skills : undefined;
+    const cs_skills = sessionAttributes.hasOwnProperty('cs_skills') ? sessionAttributes.cs_skills : undefined;
+    const management_skills = sessionAttributes.hasOwnProperty('management_skills') ? sessionAttributes.management_skills : undefined;
+    const pc_skills = sessionAttributes.hasOwnProperty('pc_skills') ? sessionAttributes.pc_skills : undefined;
+    const analysis_skills = sessionAttributes.hasOwnProperty('analysis_skills') ? sessionAttributes.analysis_skills : undefined;
+    const datascience_skills = sessionAttributes.hasOwnProperty('datascience_skills') ? sessionAttributes.datascience_skills : undefined;
+
+    if (major && gpa && grad_year && math_skills && cs_skills && management_skills && pc_skills && analysis_skills && datascience_skills) {
+      attributesManager.setSessionAttributes(sessionAttributes)
+    }
+  }
 }
+
 
 /* LAMBDA SETUP */
 const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
+  .withPersistenceAdapter(
+    new persistenceAdapter.S3PersistenceAdapter({ bucketName: 'skill-prudential-intership-recommendation' })
+  )
   .addRequestHandlers(
-    LaunchRequestHandler,
-    RecipeHandler,
+    LaunchRequestHandlerWithProfile,
+    LaunchRequestHandlerNoProfile,
+    GeneralInformationIntentHandler,
+    CaptureAttributesIntentHandler,
     HelpHandler,
     RepeatHandler,
     ExitHandler,
     SessionEndedRequestHandler,
-  )
-  .addRequestInterceptors(LocalizationInterceptor)
+)
+  .addRequestInterceptors(LoggingRequestInterceptor, LocalizationInterceptor, LoadProfileInterceptor)
+  .addResponseInterceptors(LoggingResponseInterceptor)
   .addErrorHandlers(ErrorHandler)
   .lambda();
-
-// langauge strings for localization
-// TODO: The items below this comment need your attention
-
-const languageStrings = {
-  'en': {
-    translation: {
-      RECIPES: recipes.RECIPE_EN_US,
-      SKILL_NAME: 'Minecraft Helper',
-      WELCOME_MESSAGE: 'Welcome to %s. You can ask a question like, what\'s the recipe for a %s? ... Now, what can I help you with?',
-      WELCOME_REPROMPT: 'For instructions on what you can say, please say help me.',
-      DISPLAY_CARD_TITLE: '%s  - Recipe for %s.',
-      HELP_MESSAGE: 'You can ask questions such as, what\'s the recipe for a %s, or, you can say exit...Now, what can I help you with?',
-      HELP_REPROMPT: 'You can say things like, what\'s the recipe for a %s, or you can say exit...Now, what can I help you with?',
-      STOP_MESSAGE: 'Goodbye!',
-      RECIPE_REPEAT_MESSAGE: 'Try saying repeat.',
-      RECIPE_NOT_FOUND_WITH_ITEM_NAME: 'I\'m sorry, I currently do not know the recipe for %s. ',
-      RECIPE_NOT_FOUND_WITHOUT_ITEM_NAME: 'I\'m sorry, I currently do not know that recipe. ',
-      RECIPE_NOT_FOUND_REPROMPT: 'What else can I help with?',
-    },
-  },
-  'en-US': {
-    translation: {
-      RECIPES: recipes.RECIPE_EN_US,
-      SKILL_NAME: 'American Minecraft Helper',
-    },
-  },
-  'en-GB': {
-    translation: {
-      RECIPES: recipes.RECIPE_EN_GB,
-      SKILL_NAME: 'British Minecraft Helper',
-    },
-  },
-  'de': {
-    translation: {
-      RECIPES: recipes.RECIPE_DE_DE,
-      SKILL_NAME: 'Assistent für Minecraft in Deutsch',
-      WELCOME_MESSAGE: 'Willkommen bei %s. Du kannst beispielsweise die Frage stellen: Welche Rezepte gibt es für eine %s? ... Nun, womit kann ich dir helfen?',
-      WELCOME_REPROMPT: 'Wenn du wissen möchtest, was du sagen kannst, sag einfach „Hilf mir“.',
-      DISPLAY_CARD_TITLE: '%s - Rezept für %s.',
-      HELP_MESSAGE: 'Du kannst beispielsweise Fragen stellen wie „Wie geht das Rezept für eine %s“ oder du kannst „Beenden“ sagen ... Wie kann ich dir helfen?',
-      HELP_REPROMPT: 'Du kannst beispielsweise Sachen sagen wie „Wie geht das Rezept für eine %s“ oder du kannst „Beenden“ sagen ... Wie kann ich dir helfen?',
-      STOP_MESSAGE: 'Auf Wiedersehen!',
-      RECIPE_REPEAT_MESSAGE: 'Sage einfach „Wiederholen“.',
-      RECIPE_NOT_FOUND_WITH_ITEM_NAME: 'Tut mir leid, ich kenne derzeit das Rezept für %s nicht. ',
-      RECIPE_NOT_FOUND_WITHOUT_ITEM_NAME: 'Tut mir leid, ich kenne derzeit dieses Rezept nicht. ',
-      RECIPE_NOT_FOUND_REPROMPT: 'Womit kann ich dir sonst helfen?',
-    },
-  },
-};

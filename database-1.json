@@ -13,17 +13,17 @@
       ],
       "impact": "Are you looking for a career that helps you apply your love of math, data, and science to inform business strategy and work with diverse teams on challenging projects? Are you interested in being a part of an exciting internship program that is focused on developing technical and professional skills while collaborating alongside leaders in the actuarial community? If you are results driven, have a passion for working with data, and are deeply technical and highly innovative, then Prudential's Consulting Actuarial Internship Program is the place for you!",
       "responsibilities": [
-         "Analyzing client data used to develop pension plan liabilities",
-         "Reconciling census changes and associated gains/losses",
-         "Preparing ERISA funding valuations and government filings",
-         "Developing tools and models for key processes",
-         "Performing actuarial research and statistical analyses"
+        "Analyzing client data used to develop pension plan liabilities",
+        "Reconciling census changes and associated gains/losses",
+        "Preparing ERISA funding valuations and government filings",
+        "Developing tools and models for key processes",
+        "Performing actuarial research and statistical analyses"
       ],
       "qualifications": {
         "target_grad_year": [
-           2020,
-           2021,
-           2022
+          2020,
+          2021,
+          2022
         ],
         "target_majors": [
           "AS",
@@ -40,8 +40,8 @@
         "requires_analysis_skills": false,
         "requires_datascience_skills": false
       }
-   },
-   {
+    },
+    {
       "category": "",
       "job_code": "",
       "job_title": "",
@@ -54,13 +54,13 @@
       ],
       "impact": "",
       "responsibilities": [
-         "",
-         ""
+        "",
+        ""
       ],
       "qualifications": {
         "target_grad_year": [
-           0000,
-           0000
+          0,
+          0
         ],
         "target_majors": [
           "AS",
@@ -75,7 +75,7 @@
         "requires_pc_skills": false,
         "requires_analysis_skills": false,
         "requires_datascience_skills": false
-     }
+      }
     }
   ]
 }

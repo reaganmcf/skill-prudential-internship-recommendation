@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "minecraft helper",
+      "invocationName": "prudential job finder",
       "intents": [
         {
           "name": "AMAZON.RepeatIntent",
@@ -32,52 +32,496 @@
           ]
         },
         {
-          "name": "CollectAttributeIntent",
-          "slots": [],
-          "samples": []
-        },
-        {
-          "name": "InternshipIntent",
+          "name": "CaptureAttributesIntent",
           "slots": [
             {
-              "name": "Language",
-              "type": "AMAZON.Actor"
+              "name": "major",
+              "type": "MAJOR_TYPES",
+              "samples": [
+                "i am a {major} major",
+                "my major is {major}",
+                "{major}"
+              ]
+            },
+            {
+              "name": "gpa",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "i have a {gpa} gpa",
+                "{gpa}",
+                "my gpa is {gpa}"
+              ]
+            },
+            {
+              "name": "grad_year",
+              "type": "AMAZON.FOUR_DIGIT_NUMBER",
+              "samples": [
+                "{grad_year}",
+                "i graduate {grad_year}"
+              ]
+            },
+            {
+              "name": "math_skills",
+              "type": "YES_OR_NO",
+              "samples": [
+                "{math_skills}"
+              ]
+            },
+            {
+              "name": "cs_skills",
+              "type": "YES_OR_NO",
+              "samples": [
+                "{cs_skills}"
+              ]
+            },
+            {
+              "name": "management_skills",
+              "type": "YES_OR_NO",
+              "samples": [
+                "{management_skills}"
+              ]
+            },
+            {
+              "name": "pc_skills",
+              "type": "YES_OR_NO",
+              "samples": [
+                "{pc_skills}"
+              ]
+            },
+            {
+              "name": "analysis_skills",
+              "type": "YES_OR_NO",
+              "samples": [
+                "{analysis_skills}"
+              ]
+            },
+            {
+              "name": "datascience_skills",
+              "type": "YES_OR_NO",
+              "samples": [
+                "{datascience_skills}"
+              ]
             }
           ],
           "samples": [
-            "what internships are there for {Language} developers",
-            "what internships are there",
-            "what internships can I apply for"
+            "create my profile",
+            "{major} {gpa} {grad_year} {math_skills} {cs_skills} {management_skills} {pc_skills} {analysis_skills} {datascience_skills}"
           ]
         }
       ],
       "types": [
         {
+          "name": "YES_OR_NO",
           "values": [
             {
+              "id": "YES",
               "name": {
-                "value": "java"
+                "value": "yes",
+                "synonyms": [
+                  "yes",
+                  "yeah",
+                  "yep",
+                  "sure",
+                  "i do"
+                ]
               }
             },
             {
+              "id": "NO",
               "name": {
-                "value": "javascript"
-              }
-            },
-            {
-              "name": {
-                "value": "ruby"
-              }
-            },
-            {
-              "name": {
-                "value": "ruby on rails"
+                "value": "no",
+                "synonyms": [
+                  "no",
+                  "nope",
+                  "nah",
+                  "i don't"
+                ]
               }
             }
-          ],
-          "name": "ProgrammingLanguage"
+          ]
+        },
+        {
+          "name": "MAJOR_TYPES",
+          "values": [
+            {
+              "id": "AS",
+              "name": {
+                "value": "actuarial science",
+                "synonyms": [
+                  "actuary"
+                ]
+              }
+            },
+            {
+              "id": "STATS",
+              "name": {
+                "value": "statistics",
+                "synonyms": [
+                  "statistician"
+                ]
+              }
+            },
+            {
+              "id": "MATH",
+              "name": {
+                "value": "mathematics",
+                "synonyms": [
+                  "math"
+                ]
+              }
+            },
+            {
+              "id": "CS",
+              "name": {
+                "value": "computer science",
+                "synonyms": [
+                  "comp sci"
+                ]
+              }
+            },
+            {
+              "id": "ACT",
+              "name": {
+                "value": "accounting",
+                "synonyms": [
+                  "accountant"
+                ]
+              }
+            },
+            {
+              "id": "BMGT",
+              "name": {
+                "value": "business management",
+                "synonyms": [
+                  "business administration"
+                ]
+              }
+            },
+            {
+              "id": "BANAL",
+              "name": {
+                "value": "business analytics",
+                "synonyms": [
+                  "business analysis"
+                ]
+              }
+            },
+            {
+              "id": "FIN",
+              "name": {
+                "value": "finance",
+                "synonyms": [
+                  "finance major",
+                  "financial services",
+                  "fintech"
+                ]
+              }
+            },
+            {
+              "id": "ECON",
+              "name": {
+                "value": "economics",
+                "synonyms": [
+                  "economist"
+                ]
+              }
+            },
+            {
+              "id": "SC",
+              "name": {
+                "value": "supply chain",
+                "synonyms": [
+                  "supply chains",
+                  "operations management"
+                ]
+              }
+            },
+            {
+              "id": "OR",
+              "name": {
+                "value": "operations research",
+                "synonyms": [
+                  "op research"
+                ]
+              }
+            },
+            {
+              "id": "IFE",
+              "name": {
+                "value": "information engineering",
+                "synonyms": [
+                  "financial engineering"
+                ]
+              }
+            },
+            {
+              "id": "RE",
+              "name": {
+                "value": "real estate",
+                "synonyms": [
+                  "realtor"
+                ]
+              }
+            },
+            {
+              "id": "DANAL",
+              "name": {
+                "value": "data analytics",
+                "synonyms": [
+                  "data science"
+                ]
+              }
+            },
+            {
+              "id": "MIS",
+              "name": {
+                "value": "management information systems"
+              }
+            },
+            {
+              "id": "MKT",
+              "name": {
+                "value": "marketing",
+                "synonyms": [
+                  "advertisements"
+                ]
+              }
+            },
+            {
+              "id": "COMM",
+              "name": {
+                "value": "communications",
+                "synonyms": [
+                  "comms"
+                ]
+              }
+            },
+            {
+              "id": "IT",
+              "name": {
+                "value": "information technology",
+                "synonyms": [
+                  "i. t. i.",
+                  "i. t.",
+                  "information systems"
+                ]
+              }
+            },
+            {
+              "id": "QFIN",
+              "name": {
+                "value": "quantitative finance",
+                "synonyms": [
+                  "quant"
+                ]
+              }
+            },
+            {
+              "id": "BAIT",
+              "name": {
+                "value": "business analytics",
+                "synonyms": [
+                  "business analytics and information technology"
+                ]
+              }
+            },
+            {
+              "id": "CE",
+              "name": {
+                "value": "computer engineering",
+                "synonyms": [
+                  "comp engineering"
+                ]
+              }
+            },
+            {
+              "id": "EE",
+              "name": {
+                "value": "electrical engineering",
+                "synonyms": [
+                  "e. e."
+                ]
+              }
+            }
+          ]
         }
       ]
-    }
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "CaptureAttributesIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "major",
+              "type": "MAJOR_TYPES",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.584716390559.1262198893664"
+              }
+            },
+            {
+              "name": "gpa",
+              "type": "AMAZON.NUMBER",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.584716390559.334543312847"
+              }
+            },
+            {
+              "name": "grad_year",
+              "type": "AMAZON.FOUR_DIGIT_NUMBER",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.584716390559.191878874261"
+              }
+            },
+            {
+              "name": "math_skills",
+              "type": "YES_OR_NO",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.584716390559.139416090854"
+              }
+            },
+            {
+              "name": "cs_skills",
+              "type": "YES_OR_NO",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.584716390559.306324540535"
+              }
+            },
+            {
+              "name": "management_skills",
+              "type": "YES_OR_NO",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.584716390559.760483187966"
+              }
+            },
+            {
+              "name": "pc_skills",
+              "type": "YES_OR_NO",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.584716390559.1119636768224"
+              }
+            },
+            {
+              "name": "analysis_skills",
+              "type": "YES_OR_NO",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.584716390559.694607258992"
+              }
+            },
+            {
+              "name": "datascience_skills",
+              "type": "YES_OR_NO",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.584716390559.714883412444"
+              }
+            }
+          ]
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.584716390559.1262198893664",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What is your major?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.584716390559.334543312847",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "what is your gpa?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.584716390559.191878874261",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "what year do you graduate?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.584716390559.139416090854",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "do you have strong math skills, reply yes or no"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.584716390559.1119636768224",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "would you say you have strong personal computer skills, yes or no"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.584716390559.306324540535",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "do you have strong computer science skills, yes or no"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.584716390559.760483187966",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "do you have strong management skills, reply yes or no"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.584716390559.694607258992",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "do you have strong analysis skills, reply yes or no"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.584716390559.714883412444",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "do you have strong data science skills, reply yes or no"
+          }
+        ]
+      }
+    ]
   }
 }
