@@ -7,6 +7,7 @@ const sprintf = require('i18next-sprintf-postprocessor');
 const persistenceAdapter = require('ask-sdk-s3-persistence-adapter');
 const translations = require('./localization')
 const aplUtils = require('./aplUtils');
+var twilioClient = require('twilio')('AC8e84b927f6924f019f62bd292f833b93', '2173893ca067949df50d7997be8657d6')
 /**
  * Handler for LaunchRequest sent by Alexa
  * Triggers when the user already has a profile setup in persistent attributes
@@ -89,6 +90,42 @@ const LaunchRequestHandlerNoProfile = {
   }
 }
 
+const TouchEventHandler = {
+  canHandle(handlerInput) {
+    return (Alexa.getRequestType(handlerInput.requestEnvelope) === 'Alexa.Presentation.APL.UserEvent'
+      && handlerInput.requestEnvelope.request.arguments.length > 0
+      && handlerInput.requestEnvelope.request.arguments[0] === 'jobPosting');
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+
+    console.log(`in touchEventHandler: ${JSON.stringify(handlerInput.requestEnvelope.request)}`)
+    let job_id = handlerInput.requestEnvelope.request.arguments[1]
+    job_id = job_id.includes(" ") ? job_id.split(" ").join("%20") : job_id;
+    let url = `http://jobs.prudential.com/job-description.php?jobReqNo=${job_id}&IsThisACampusRequisition=Yes`
+
+    twilioClient.messages.create({
+      from: '+16145037818',
+      body: `To view more infromation about this position, open the following link: ${url}`,
+      to: '+15129993162'
+    }).then(message => {
+      return true;
+    }).catch(err => {
+      console.log("ERROR");
+      console.log(err);
+      return false;
+    });
+
+    sessionAttributes.speakOutput = requestAttributes.t('Sent an SMS with the job posting link to your personal device');
+    sessionAttributes.repromptSpeech = '';
+
+    return handlerInput.responseBuilder
+      .speak(sessionAttributes.speakOutput)
+      .getResponse();
+  }
+}
+
 const KeywordScanIntent = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === "IntentRequest"
@@ -99,14 +136,29 @@ const KeywordScanIntent = {
     const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
     const slots = handlerInput.requestEnvelope.request.intent.slots
-    const keyword = slots.keyword.value
+    let keyword = slots.keyword.value
 
-    keyword.replace(" ", "+")
+    keyword = keyword.split(' ').join('+')
 
     let url = `http://jobs.prudential.com/job-listing.php?IsThisACampusRequisition=Yes&keyword=${keyword}`
 
-    sessionAttributes.speakOutput = requestAttributes.t(``);
-    sessionAttributes.repromptSpeech = requestAttributes.t(`reprompt scanning for ${keyword}`);
+    //send sms
+    twilioClient.messages.create({
+      from: '+16145037818',
+      body: `To view more infromation about these positions, open the following link: ${url}`,
+      to: '+15129993162'
+    }).then(message => {
+      return true;
+    }).catch(err => {
+      console.log("ERROR");
+      console.log(err);
+      return false;
+    });
+
+    aplUtils.keywordSearchScreen(handlerInput);
+
+    sessionAttributes.speakOutput = requestAttributes.t(`FOUND_SCAN`);
+    sessionAttributes.repromptSpeech = requestAttributes.t(`FOUND_SCAN_REMPROMPT`);
 
     return handlerInput.responseBuilder
       .speak(sessionAttributes.speakOutput)
@@ -156,6 +208,8 @@ const ScanIntentHandler = {
 
     sessionAttributes.speakOutput = speechOutput;
     sessionAttributes.repromptSpeech = requestAttributes.t('in scan');
+
+    aplUtils.scanScreen(handlerInput, perfectMatch);
 
     return handlerInput.responseBuilder
       .speak(sessionAttributes.speakOutput)
@@ -312,7 +366,7 @@ const ExitHandler = {
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const speakOutput = requestAttributes.t('STOP_MESSAGE', requestAttributes.t('SKILL_NAME'));
+    const speakOutput = requestAttributes.t('STOP_MESSAGE');
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -327,7 +381,7 @@ const SessionEndedRequestHandler = {
   },
   handle(handlerInput) {
     console.log(`Session ended with reason: ${JSON.stringify(handlerInput.requestEnvelope)} `);
-    return handlerInput.responseBuilder.getResponse();
+    return handlerInput.responseBuilder.speak("Goodbye!").getResponse();
   },
 };
 
@@ -496,6 +550,7 @@ exports.handler = skillBuilder
   .addRequestHandlers(
     LaunchRequestHandlerWithProfile,
     LaunchRequestHandlerNoProfile,
+    TouchEventHandler,
     GeneralInformationIntentHandler,
     GeneralInternshipInformationIntent,
     CaptureAttributesIntentHandler,

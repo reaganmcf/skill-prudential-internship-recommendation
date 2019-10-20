@@ -1,0 +1,71 @@
+{
+  "type": "APL",
+  "version": "1.1",
+  "import": [
+    {
+      "name": "alexa-viewport-profiles",
+      "version": "1.1.0"
+    },
+    {
+      "name": "alexa-layouts",
+      "version": "1.1.0"
+    }
+  ],
+  "resources": [
+    {
+      "description": "Background Image for Help Screen on Small Round Hubs",
+      "when": "${@viewportProfile == @hubRoundSmall}",
+      "strings": {
+        "backgroundImg": "https://skill-prudential-intership-recommendation.s3.amazonaws.com/SMALL.png"
+      }
+    },
+    {
+      "description": "Background Image for Help Screen on Landscape Hubs",
+      "when": "${@viewportProfile == @hubLandscapeSmall || @viewportProfile == @hubLandscapeMedium || @viewportProfile == @hubLandscapeLarge}",
+      "strings": {
+        "backgroundImg": "https://skill-prudential-intership-recommendation.s3.amazonaws.com/MEDIUM.png"
+      }
+    },
+    {
+      "description": "Background Image for Help Screen on XLarge Hubs (e.g TV)",
+      "when": "${@viewportProfile == @tvLandscapeXLarge}",
+      "strings": {
+        "backgroundImg": "https://skill-prudential-intership-recommendation.s3.amazonaws.com/X_LARGE.png"
+      }
+    },
+    {
+      "description": "Skill Icon",
+      "strings": {
+        "skillIcon": "https://skill-prudential-intership-recommendation.s3.amazonaws.com/b3dd47c9438088d82c691ac1cac30e.png"
+      }
+    }
+  ],
+  "mainTemplate": {
+    "parameters": [
+      "payload"
+    ],
+    "items": [
+      {
+        "type": "AlexaTextList",
+        "theme": "${viewport.theme}",
+        "headerTitle": "${payload.sauceBossData.headerTitle}",
+        "headerSubtitle": "${payload.sauceBossData.headerSubtitle}",
+        "headerAttributionImage": "@skillIcon",
+        "headerDivider": true,
+        "headerBackButton": false,
+        "backgroundImageSource": "@backgroundImg",
+        "backgroundScale": "best-fill",
+        "backgroundAlign": "center",
+        "hideOrdinal": true,
+        "primaryAction": {
+          "type": "SendEvent",
+          "arguments": [
+            "jobPosting",
+            "${data.id}"
+          ]
+        },
+        "listItems": "${payload.sauceBossData.items}"
+      }
+    ]
+  }
+}
