@@ -13,7 +13,7 @@
             "eTag": "24825ca2cf4b97128c003000bd2944a9"
           },
           "en-US": {
-            "eTag": "da09c710623868469417376e52dbd064"
+            "eTag": "e37e35ce7d0cacc49c32acb774d94ecf"
           },
           "en-GB": {
             "eTag": "155aa331176976dbe20b48f31780a479"
@@ -29,7 +29,7 @@
             "codeUri": "lambda/custom",
             "functionName": "ask-custom-skill-prudential-internship-recommedation-default",
             "handler": "index.handler",
-            "revisionId": "3d823b11-deab-44eb-be15-5559af8aff2f",
+            "revisionId": "0c3555db-e8f7-42ff-84df-d465023a9a33",
             "runtime": "nodejs8.10"
           }
         ]

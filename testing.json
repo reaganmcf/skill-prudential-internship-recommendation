@@ -1,0 +1,13 @@
+{
+  "outputSpeech": {
+    "type": "SSML",
+    "ssml": "<speak>Are you a highly organized and ambitious student who wants to put your technical and product management skills to use in a business environment? If you have a passion for Product Management, want to learn & communicate new ideas to a professional audience, and drive challenging projects end-to-end, then this is the internship for you! Our Product Management Program invites financial technology, design, and technical enthusiasts to help build, optimize and deliver platforms for Prudential Financials’ global businesses. Your creativity helps build the world in which we operate, conduct business, and serve our clients across the globe. Would you like to hear the next?</speak>"
+  },
+  "reprompt": {
+    "outputSpeech": {
+      "type": "SSML",
+      "ssml": "<speak>would you like to hear the next?</speak>"
+    }
+  },
+  "shouldEndSession": false
+}

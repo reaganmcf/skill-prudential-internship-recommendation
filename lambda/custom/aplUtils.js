@@ -58,7 +58,7 @@ function generateScanScreenDatasource(handlerInput, perfectMatches) {
   // Generate JSON Datasource
   return {
     sauceBossData: {
-      headerTitle: `We found ${perfectMatches.length} jobs baed on your personal recruitment profile`,
+      headerTitle: `We found ${perfectMatches.length} jobs based on your personal recruitment profile`,
       headerSubtitle: `To view information, tap on the item`,
       headerBackButton: !Alexa.isNewSession(handlerInput.requestEnvelope),
       items: arr
