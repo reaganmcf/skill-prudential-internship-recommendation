@@ -12,11 +12,10 @@ const translations = require('./localization')
  */
 const LaunchRequestHandlerWithProfile = {
   canHandle(handlerInput) {
-
     console.log(JSON.stringify(handlerInput.requestEnvelope.request));
     const attributesManager = handlerInput.attributesManager;
     const sessionAttributes = attributesManager.getSessionAttributes() || {};
-
+    console.log(JSON.stringify(sessionAttributes));
     const major = sessionAttributes.hasOwnProperty('major') ? sessionAttributes.major : undefined;
     const gpa = sessionAttributes.hasOwnProperty('gpa') ? sessionAttributes.gpa : undefined;
     const grad_year = sessionAttributes.hasOwnProperty('grad_year') ? sessionAttributes.grad_year : undefined;
@@ -26,6 +25,19 @@ const LaunchRequestHandlerWithProfile = {
     const pc_skills = sessionAttributes.hasOwnProperty('pc_skills') ? sessionAttributes.pc_skills : undefined;
     const analysis_skills = sessionAttributes.hasOwnProperty('analysis_skills') ? sessionAttributes.analysis_skills : undefined;
     const datascience_skills = sessionAttributes.hasOwnProperty('datascience_skills') ? sessionAttributes.datascience_skills : undefined;
+
+    let user = {
+      major,
+      gpa,
+      grad_year,
+      math_skills,
+      cs_skills,
+      management_skills,
+      pc_skills,
+      analysis_skills,
+      datascience_skills
+    }
+    console.log(user)
 
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest' &&
       major &&
@@ -40,7 +52,7 @@ const LaunchRequestHandlerWithProfile = {
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes() || {};
 
     sessionAttributes.speakOutput = requestAttributes.t('WELCOME_MESSAGE', requestAttributes.t('SKILL_NAME'));
     sessionAttributes.repromptSpeech = requestAttributes.t('WELCOME_MESSAGE_REPROMPT');
@@ -74,6 +86,47 @@ const LaunchRequestHandlerNoProfile = {
   }
 }
 
+const ScanIntentHandler = {
+  canHandle(handlerInput) {
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+
+    let tempOverrideBool = sessionAttributes.checkYesForSearchOverride;
+    sessionAttributes.checkYesForSearchOverride = undefined;
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest"
+      && ((handlerInput.requestEnvelope.request.intent.name === "AMAZON.YesIntent"
+        && tempOverrideBool == true)
+        || (handlerInput.requestEnvelope.request.type === "IntentRequest"
+          && handlerInput.requestEnvelope.request.intent.name === "ScanIntent"))
+  },
+  handle(handlerInput) {
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+    //perform scan
+    let { major, gpa, grad_year, math_skills, cs_skills, management_skills, pc_skills, analysis_skills, datascience_skills } = sessionAttributes
+    let user = {
+      major,
+      gpa,
+      grad_year,
+      math_skills,
+      cs_skills,
+      management_skills,
+      pc_skills,
+      analysis_skills,
+      datascience_skills
+    }
+    let { perfectMatch, closeMatch } = findFromProfile(user);
+    console.log(`perfectMatch: ${JSON.stringify(perfectMatch)}`)
+    console.log(`closeMatch: ${JSON.stringify(closeMatch)}`);
+
+    sessionAttributes.speakOutput = requestAttributes.t('in scan');
+    sessionAttributes.repromptSpeech = requestAttributes.t('in scan');
+
+    return handlerInput.responseBuilder
+      .speak(sessionAttributes.speakOutput)
+      .reprompt(sessionAttributes.repromptSpeech)
+      .getResponse();
+  }
+}
 /**
  * Handles GeneralInformationIntent requests sent by Alexa
  */
@@ -104,22 +157,30 @@ const CaptureAttributesIntentHandler = {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
       && handlerInput.requestEnvelope.request.intent.name === 'CaptureAttributesIntent';
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes() || {};
+    const slots = handlerInput.requestEnvelope.request.intent.slots
+    const major = slots.major.resolutions.resolutionsPerAuthority[0].values[0].value.id
+    let gpa = slots.gpa.value
+    let grad_year = slots.grad_year.value
+    const math_skills = slots.math_skills.resolutions.resolutionsPerAuthority[0].values[0].value.id === 'YES' ? true : false
+    const cs_skills = slots.cs_skills.resolutions.resolutionsPerAuthority[0].values[0].value.id === 'YES' ? true : false
+    const management_skills = slots.management_skills.resolutions.resolutionsPerAuthority[0].values[0].value.id === 'YES' ? true : false
+    const pc_skills = slots.pc_skills.resolutions.resolutionsPerAuthority[0].values[0].value.id === 'YES' ? true : false
+    const analysis_skills = slots.analysis_skills.resolutions.resolutionsPerAuthority[0].values[0].value.id === 'YES' ? true : false
+    const datascience_skills = slots.datascience_skills.resolutions.resolutionsPerAuthority[0].values[0].value.id === 'YES' ? true : false
 
-    const slots = handlerInput.requestEnvelope.request.intent
-    const major = slots.major.value
-    const gpa = slots.gpa.value
-    const grad_year = slots.grad_year.value
-    const math_skills = slots.math_skills.value
-    const cs_skills = slots.cs_skills.value
-    const management_skills = slots.management_skills.value
-    const pc_skills = slots.pc_skills.value
-    const analysis_skills = slots.analysis_skills.value
-    const datascience_skills = slots.datascience_skills.value
+    if (parseInt(gpa) / 10 != 0) {
+      gpa = `${gpa.substring(0, 1)}.${gpa.substring(1)}`;
+    } else {
+      gpa = `${gpa.substring(0, 1)}.0`;
+    }
 
-    attributesManager.setPersistentAttributes({
+    gpa = parseFloat(gpa);
+    grad_year = parseInt(grad_year)
+
+    await handlerInput.attributesManager.setPersistentAttributes({
       major,
       gpa,
       grad_year,
@@ -130,13 +191,15 @@ const CaptureAttributesIntentHandler = {
       analysis_skills,
       datascience_skills
     })
-    attributesManager.savePersistentAttributes();
+    await handlerInput.attributesManager.savePersistentAttributes();
 
     sessionAttributes.speakOutput = requestAttributes.t('SAVED_PROFILE');
-    sessionAttributes.repromptSpeech = '';
+    sessionAttributes.repromptSpeech = requestAttributes.t('SAVED_PROFILE_REPROMPT');
+    // sessionAttributes.checkYesForSearchOverride = true;
 
     return handlerInput.responseBuilder
       .speak(sessionAttributes.speakOutput)
+      .reprompt(sessionAttributes.repromptSpeech)
       .getResponse();
   }
 }
@@ -208,7 +271,7 @@ const SessionEndedRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
   },
   handle(handlerInput) {
-    console.log(`Session ended with reason: ${JSON.stringify(handlerInput.requestEnvelope)}`);
+    console.log(`Session ended with reason: ${JSON.stringify(handlerInput.requestEnvelope)} `);
     return handlerInput.responseBuilder.getResponse();
   },
 };
@@ -222,7 +285,7 @@ const ErrorHandler = {
     return true;
   },
   handle(handlerInput, error) {
-    console.log(`Error handled: ${error.message}`);
+    console.log(`Error handled: ${error} `);
 
     return handlerInput.responseBuilder
       .speak('Sorry, I can\'t understand the command. Please say again.')
@@ -256,7 +319,7 @@ const LocalizationInterceptor = {
  */
 const LoggingRequestInterceptor = {
   process(handlerInput) {
-    console.log(`Incoming request: ${JSON.stringify(handlerInput.requestEnvelope)}`);
+    console.log(`Incoming request: ${JSON.stringify(handlerInput.requestEnvelope)} `);
   }
 };
 
@@ -265,7 +328,7 @@ const LoggingRequestInterceptor = {
 */
 const LoggingResponseInterceptor = {
   process(handlerInput, response) {
-    console.log(`Outgoing response: ${JSON.stringify(response)}`);
+    console.log(`Outgoing response: ${JSON.stringify(response)} `);
   }
 };
 
@@ -275,7 +338,8 @@ const LoadProfileInterceptor = {
   async process(handlerInput) {
     const attributesManager = handlerInput.attributesManager;
     const sessionAttributes = await attributesManager.getPersistentAttributes() || {};
-
+    console.log("load interceptor session attr");
+    console.log(JSON.stringify(sessionAttributes));
     const major = sessionAttributes.hasOwnProperty('major') ? sessionAttributes.major : undefined;
     const gpa = sessionAttributes.hasOwnProperty('gpa') ? sessionAttributes.gpa : undefined;
     const grad_year = sessionAttributes.hasOwnProperty('grad_year') ? sessionAttributes.grad_year : undefined;
@@ -286,12 +350,87 @@ const LoadProfileInterceptor = {
     const analysis_skills = sessionAttributes.hasOwnProperty('analysis_skills') ? sessionAttributes.analysis_skills : undefined;
     const datascience_skills = sessionAttributes.hasOwnProperty('datascience_skills') ? sessionAttributes.datascience_skills : undefined;
 
-    if (major && gpa && grad_year && math_skills && cs_skills && management_skills && pc_skills && analysis_skills && datascience_skills) {
-      attributesManager.setSessionAttributes(sessionAttributes)
+    if (major != undefined && gpa != undefined && grad_year != undefined && math_skills != undefined && cs_skills != undefined && management_skills != undefined && pc_skills != undefined && analysis_skills != undefined && datascience_skills != undefined) {
+      await attributesManager.setSessionAttributes(sessionAttributes)
     }
   }
 }
 
+
+function findFromProfile(user) {
+  let perfectMatch = []
+  let closeMatch = []
+  for (let i = 0; i < jobs.length; i++) {
+    if (jobs[i].qualifications.min_gpa > user.gpa) {
+      continue
+    }
+
+    let gradMatch = false
+    grad_loop:
+    for (let j = 0; j < jobs[i].qualifications.target_grad_year.length; j++) {
+      if (jobs[i].qualifications.target_grad_year[j] == user.grad_year) {
+        gradMatch = true
+        break grad_loop
+      }
+    }
+
+    if (!gradMatch) {
+      continue
+    }
+
+    let majorMatch = false
+    major_loop:
+    for (let j = 0; j < jobs[i].qualifications.target_grad_year.length; j++) {
+      if (jobs[i].qualifications.target_majors[j] === user.major) {
+        majorMatch = true
+        break major_loop
+      }
+    }
+
+    if (!majorMatch) {
+      continue;
+    }
+
+    let counter = 0
+    if (jobs[i].qualifications.requires_math_skills) {
+      if (!user.math_skills) counter++
+    }
+
+    if (jobs[i].qualifications.requires_cs_skills) {
+      if (!user.cs_skills) counter++
+    }
+
+    if (jobs[i].qualifications.requires_management_skills) {
+      if (!user.management_skills) counter++
+    }
+
+    if (jobs[i].qualifications.requires_pc_skills) {
+      if (!user.pc_skills) counter++
+    }
+
+    if (jobs[i].qualifications.requires_analysis_skills) {
+      if (!user.analysis_skills) counter++
+    }
+
+    if (jobs[i].qualifications.requires_datascience_skills) {
+      if (!user.datascience_skills) counter++
+    }
+
+    if (counter == 0) {
+      perfectMatch.push(jobs[i].job_title)
+      continue
+    }
+
+    if (counter <= 2) {
+      closeMatch.push(jobs[i].job_title)
+    }
+  }
+
+  return {
+    perfectMatch,
+    closeMatch
+  }
+}
 
 /* LAMBDA SETUP */
 const skillBuilder = Alexa.SkillBuilders.custom();
@@ -304,6 +443,7 @@ exports.handler = skillBuilder
     LaunchRequestHandlerNoProfile,
     GeneralInformationIntentHandler,
     CaptureAttributesIntentHandler,
+    ScanIntentHandler,
     HelpHandler,
     RepeatHandler,
     ExitHandler,
