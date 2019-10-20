@@ -36,11 +36,34 @@
           ]
         },
         {
+          "name": "GeneralInternshipInformationIntent",
+          "slots": [],
+          "samples": [
+            "what internships are available"
+          ]
+        },
+        {
           "name": "ScanIntent",
           "samples": [
             "find me a job",
             "search for a job",
             "find me an intership"
+          ]
+        },
+        {
+          "name": "KeywordScanIntent",
+          "slots": [
+            {
+              "name": "keyword",
+              "type": "SEARCH_KEYWORDS",
+              "samples": [
+                "{keyword}"
+              ]
+            }
+          ],
+          "samples": [
+            "look for {keyword} jobs",
+            "find me jobs that relate to {keyword}"
           ]
         },
         {
@@ -126,6 +149,401 @@
         }
       ],
       "types": [
+        {
+          "name": "SEARCH_KEYWORDS",
+          "values": [
+            {
+              "id": "ACT",
+              "name": {
+                "value": "accounting",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "FIN",
+              "name": {
+                "value": "finance",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "TREASURY",
+              "name": {
+                "value": "treasury",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "TAX",
+              "name": {
+                "value": "tax",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "ACTUARIAL",
+              "name": {
+                "value": "actuarial",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "ASSET",
+              "name": {
+                "value": "asset",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "MGT",
+              "name": {
+                "value": "management",
+                "synonyms": [
+                  "business management",
+                  "administration",
+                  "business administration"
+                ]
+              }
+            },
+            {
+              "id": "DATA",
+              "name": {
+                "value": "data",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "ANAL",
+              "name": {
+                "value": "analytics",
+                "synonyms": [
+                  "business analytics",
+                  "business analytics and information technology",
+                  "b. a. i. t.",
+                  "data analytics"
+                ]
+              }
+            },
+            {
+              "id": "RISK",
+              "name": {
+                "value": "risk",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "AUDIT",
+              "name": {
+                "value": "audit",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "MKT",
+              "name": {
+                "value": "marketing",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "OPS",
+              "name": {
+                "value": "operations",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "PROJECT",
+              "name": {
+                "value": "project",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "PROGRAM",
+              "name": {
+                "value": "program",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "SALES",
+              "name": {
+                "value": "sales",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "DIST",
+              "name": {
+                "value": "distribution",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "TECH",
+              "name": {
+                "value": "technology",
+                "synonyms": [
+                  "tech"
+                ]
+              }
+            },
+            {
+              "id": "UNDERWRITING",
+              "name": {
+                "value": "underwriting",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "CODE",
+              "name": {
+                "value": "code",
+                "synonyms": [
+                  "coding",
+                  "programming",
+                  "develop",
+                  "development",
+                  "developing",
+                  "software",
+                  "algorithm"
+                ]
+              }
+            },
+            {
+              "id": "JAVA",
+              "name": {
+                "value": "java",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "PYTHON",
+              "name": {
+                "value": "python",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "C",
+              "name": {
+                "value": "c.",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "CPP",
+              "name": {
+                "value": "c. plus plus",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "DOTNET",
+              "name": {
+                "value": "dot net",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "JS",
+              "name": {
+                "value": "java script",
+                "synonyms": [
+                  "j. s.",
+                  "javascript"
+                ]
+              }
+            },
+            {
+              "id": "HTML",
+              "name": {
+                "value": "h. t. m. l.",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "SQL",
+              "name": {
+                "value": "s. q. l.",
+                "synonyms": [
+                  "sequel"
+                ]
+              }
+            },
+            {
+              "id": "TABLEAU",
+              "name": {
+                "value": "tableau",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "PC",
+              "name": {
+                "value": "p. c.",
+                "synonyms": [
+                  "word",
+                  "excel",
+                  "powerpoint",
+                  "outlook"
+                ]
+              }
+            },
+            {
+              "id": "RESEARCH",
+              "name": {
+                "value": "research",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "PORT",
+              "name": {
+                "value": "portfolio",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "DEDT",
+              "name": {
+                "value": "debt",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "BUS",
+              "name": {
+                "value": "business",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "MATH",
+              "name": {
+                "value": "mathematics",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "STATS",
+              "name": {
+                "value": "statistics",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "COMP",
+              "name": {
+                "value": "computer",
+                "synonyms": [
+                  "computer engineering"
+                ]
+              }
+            },
+            {
+              "id": "ENG",
+              "name": {
+                "value": "engineering",
+                "synonyms": [
+                  "engineer"
+                ]
+              }
+            },
+            {
+              "id": "CS",
+              "name": {
+                "value": "computer science",
+                "synonyms": [
+                  "c. s.",
+                  "comp sci"
+                ]
+              }
+            },
+            {
+              "id": "HEALTH",
+              "name": {
+                "value": "health",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "IMPACT",
+              "name": {
+                "value": "impact",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "DATABASE",
+              "name": {
+                "value": "database",
+                "synonyms": []
+              }
+            },
+            {
+              "id": "BACHELOR",
+              "name": {
+                "value": "bachelor",
+                "synonyms": [
+                  "bachelors",
+                  "b. s.",
+                  "b. a.",
+                  "bachelors degree"
+                ]
+              }
+            },
+            {
+              "id": "AS",
+              "name": {
+                "value": "actuary",
+                "synonyms": [
+                  "actuarial",
+                  "actuarial science"
+                ]
+              }
+            },
+            {
+              "id": "ECON",
+              "name": {
+                "value": "economics",
+                "synonyms": [
+                  "econ"
+                ]
+              }
+            },
+            {
+              "id": "SC",
+              "name": {
+                "value": "supply chain",
+                "synonyms": [
+                  "supply",
+                  "s. c.",
+                  "operations management"
+                ]
+              }
+            },
+            {
+              "id": "OR",
+              "name": {
+                "value": "operations",
+                "synonyms": [
+                  "operations reasearch"
+                ]
+              }
+            },
+            {
+              "id": "IT",
+              "name": {
+                "value": "information technology",
+                "synonyms": [
+                  "i. t."
+                ]
+              }
+            }
+          ]
+        },
         {
           "name": "YES_OR_NO",
           "values": [

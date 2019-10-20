@@ -6,14 +6,14 @@
       "merge": {},
       "resources": {
         "manifest": {
-          "eTag": "c4c8da9c7f18c099391c6c64f82c0cc6"
+          "eTag": "c6ffba4bfb4b339a04d4153b2fd59fb0"
         },
         "interactionModel": {
           "de-DE": {
             "eTag": "24825ca2cf4b97128c003000bd2944a9"
           },
           "en-US": {
-            "eTag": "18e51a0ebb65275761be0fc0c3fdc0da"
+            "eTag": "43e1e4580cc2598771d18a2d10090439"
           },
           "en-GB": {
             "eTag": "155aa331176976dbe20b48f31780a479"
@@ -29,7 +29,7 @@
             "codeUri": "lambda/custom",
             "functionName": "ask-custom-skill-prudential-internship-recommedation-default",
             "handler": "index.handler",
-            "revisionId": "6a52b942-a250-418f-9206-aa4d7f35640a",
+            "revisionId": "babdc127-8e9c-4585-9766-359c757e3f27",
             "runtime": "nodejs8.10"
           }
         ]
